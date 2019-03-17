@@ -1,0 +1,25 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+indent_size = 2
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{py,rb,css,scss,sass,yml,json, vue}]
+indent_size = 2
+
+# Trim trailing whitespaca
+[*.{rb,css,scss,json}]
+trim_trailing_whitespace = true
+
+# 2 space indentation
+[*.{js,jsx,es6}]
+indent_size = 2
