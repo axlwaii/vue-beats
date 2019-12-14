@@ -1,32 +1,65 @@
 <template>
-<div id="vue-beats">
+<div id="vue-beats" class="vue-beats">
   <!-- Header -->
-    <!-- Metronom / -->
-    <!-- Controls / -->
-    <!-- Time / -->
+  <div class="vue-beats__header">
+    <Metronom />
+    <button class="vue-beats__play" v-on:click="playSet">{{playLabel}}</button>
+  </div>
+  <StepSequenzer />
+  <!-- Metronom / -->
+  <!-- Controls / -->
+  <!-- Time / -->
   <!-- / Header -->
 
   <!-- Content -->
-    <!-- StepSequenzer -->
+  <!-- StepSequenzer -->
   <!-- /Content -->
 </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { mapState } from 'vuex';
+import Metronom from './components/Metronom.vue';
+import StepSequenzer from './components/StepSequenzer.vue';
 
 export default {
   name: 'vue-beats',
   components: {
-    HelloWorld
+    Metronom,
+    StepSequenzer,
   },
+  computed: {
+    ...mapState([
+      'play',
+    ]),
+    playLabel: function() {
+      return this.play ? "Stop" : "Play";
+    }
+  },
+  mounted() {
+    this.$store.dispatch('setupSteps', 16);
+  },
+  methods: {
+    playSet: function() {
+      if (this.play) {
+        this.$store.commit('resetStep');
+        this.$store.commit('setPlay', false);
+        return;
+      }
 
+      this.$store.commit('setPlay', true);
+    },
+  }
 }
 </script>
 
 <style lang="scss">
-$background: #111;
+$background: #2f4154;
 $foreground: #fff;
+
+html {
+  background: $background;
+}
 
 body {
   background: $background;
@@ -42,6 +75,28 @@ body {
   box-sizing: border-box;
 }
 
-#vue-beats {
+.vue-beats__play {
+  background: #444;
+  color: #fff;
+  height: 42px;
+  width: 42px;
+  font-size: 10px;
+  border-radius: 50%;
+
+  &:focus,
+  &:active {
+    outline: 0;
+  }
+}
+
+.vue-beats__header {
+  display: flex;
+  background: #2f4154;
+  padding: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 10px solid darken(#2f4154, 10);
 }
 </style>
