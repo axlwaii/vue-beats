@@ -15,8 +15,21 @@ export default new Vuex.Store({
     stepSamples: {},
     play: false,
     sounds: SOUND_LIST,
+    patterns: [],
+  },
+  getters: {
+    getPattern(state, value) {
+      return state.patterns[value];
+    },
   },
   mutations: {
+    setPattern(state, value) {
+      state.stepSamples = JSON.parse(state.patterns[value]);
+    },
+    addPattern(state) {
+      const stringifiedState = JSON.stringify(state.stepSamples);
+      state.patterns.push(stringifiedState);
+    },
     setBPM(state, value) {
       state.bpm = value;
     },
@@ -72,10 +85,5 @@ export default new Vuex.Store({
       commit('setStepSamples', samples)
       commit('setSteps', payload);
     },
-  },
-  getters: {
-    // lastTick(state) {
-    //   return state.lastTick;
-    // },
   },
 });

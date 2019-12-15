@@ -1,5 +1,6 @@
 <template>
 <div class="metronom">
+  Latency: {{ tickDelay }}ms
   <div class="metronom__rythm">
     BPM:
     <input type="number" v-model="customBpm">
@@ -12,7 +13,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import worker from './tickWorker';
+import worker from '../service-worker/tickWorker';
 import MetronomIndicator from './MetronomIndicator.vue';
 
 export default {
@@ -37,27 +38,44 @@ export default {
       if(newValue) {
         this.run();
       } else {
+        worker.postMessage({
+          action: 'stop',
+        });
         this.activeIndicator = null;
       }
     },
+    delay() {
+      if (this.play) {
+        worker.postMessage({
+          action: 'update',
+          type: 'message',
+          delay: this.delay,
+        });
+      }
+    },
+  },
+
+  mounted() {
+    worker.onmessage = () => {
+      this.tickDelay = Math.ceil(Date.now() - this.lastTick - this.delay);
+      this.lastTick = Date.now();
+
+      this.$store.commit('increaseActiveStep');
+      this.activeIndicator = this.getNextActiveIndicator();
+
+      if (this.soundEnabled) this.beep();
+    };
   },
 
   methods: {
     run: function() {
       this.lastTick = Date.now();
-      this.activeIndicator = this.getNextActiveIndicator();
 
-      this.$store.commit('increaseActiveStep');
-
-      if (this.soundEnabled) this.beep();
-
-      worker.send(this.delay, this.lastTick)
-        .then(() => {
-
-          if (this.play) {
-            this.run();
-          }
-        });
+      worker.postMessage({
+        action: 'start',
+        type: 'message',
+        delay: this.delay,
+      });
     },
 
     getNextActiveIndicator: function() {
@@ -92,6 +110,7 @@ export default {
     return {
       customBpm: 120,
       lastTick: Date.now(),
+      tickDelay: 0,
       activeIndicator: null,
       indicators: 4,
       soundEnabled: false,
@@ -124,6 +143,7 @@ export default {
     font-size: 12px;
     text-align: left;
     padding: 0;
+    margin-left: 20px
   }
 
   select,
