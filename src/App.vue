@@ -6,6 +6,7 @@
     <button class="vue-beats__play" v-on:click="playSet">{{playLabel}}</button>
   </div>
   <StepSequenzer />
+  <SessionsManager />
   <!-- Metronom / -->
   <!-- Controls / -->
   <!-- Time / -->
@@ -21,12 +22,14 @@
 import { mapState } from 'vuex';
 import Metronom from './components/Metronom.vue';
 import StepSequenzer from './components/StepSequenzer.vue';
+import SessionsManager from './components/SessionsManager.vue';
 
 export default {
   name: 'vue-beats',
   components: {
     Metronom,
     StepSequenzer,
+    SessionsManager,
   },
   computed: {
     ...mapState([
