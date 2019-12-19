@@ -69,9 +69,11 @@ export default {
       audioSource.src = this.customAudioUrl;
       audio.appendChild(audioSource);
 
+      audio.preload = true;
+
       this.audio = audio;
 
-      this.$el.appendChild(this.audio);
+      this.$el.appendChild(audio);
     },
     selectAndPlay() {
       this.$store.commit('setActiveSample', this.sampleId);
