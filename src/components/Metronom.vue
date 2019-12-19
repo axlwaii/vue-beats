@@ -57,11 +57,11 @@ export default {
 
   mounted() {
     worker.onmessage = () => {
-      this.tickDelay = Math.ceil(Date.now() - this.lastTick - this.delay);
-      this.lastTick = Date.now();
-
       this.$store.commit('increaseActiveStep');
       this.activeIndicator = this.getNextActiveIndicator();
+
+      this.tickDelay = Math.ceil(Date.now() - this.lastTick - this.delay);
+      this.lastTick = Date.now();
 
       if (this.soundEnabled) this.beep();
     };
