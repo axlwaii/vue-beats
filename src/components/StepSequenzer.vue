@@ -14,8 +14,8 @@
       />
       <SamplePad
         :ref="'pad-' + step"
-        :playing='isPlayingStep(step)'
         :active='step === activeSample'
+        :playing="isPlayingStep(step)"
         :audio-path='sounds[step-1]'
         :sample-id="step"
         :highlight-color="getColor(step)"
@@ -45,6 +45,18 @@ export default {
       'stepMode',
       'stepSamples',
     ]),
+    activeStepSamples() {
+      return Object.keys(this.stepSamples);
+    },
+  },
+  watch: {
+    activeStep() {
+      this.activeStepSamples.forEach((stepSample) => {
+        if (this.stepSamples[stepSample].includes(this.activeStep)) {
+          this.$refs[`pad-${stepSample}`][0].play();
+        }
+      });
+    },
   },
   methods: {
     getColor(step) {
@@ -78,21 +90,8 @@ export default {
         return
       }
 
-      if (this.stepSamples[number].includes(this.activeStep)) {
-        this.$refs[`pad-${number}`][0].play();
-      }
-
       return this.stepSamples[number].includes(this.activeStep);
     },
-    increaseStepCounter() {
-      this.activeStep = this.activeStep < this.steps ?
-        this.activeStep + 1 : 1;
-
-      if (this.isActivatedStep(this.activeStep)) {
-        this.audio.currentTime = 0;
-        this.audio.play();
-      }
-    }
   },
 
   data: function() {

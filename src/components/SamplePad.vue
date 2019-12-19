@@ -5,7 +5,13 @@
   v-bind:style="{ background: active || playing ? highlightColor : null }"
   @click="selectAndPlay"
 >
-  <input v-model="customAudioUrl" type="text/html">
+  <div class="sample-pad__settings">
+    <div v-if="audio">
+      volume: {{ this.audio.volume * 100 }}
+    </div>
+    sample:
+    <input v-model="customAudioUrl" type="text/html">
+  </div>
 </div>
 </template>
 
@@ -29,10 +35,6 @@ export default {
       default: false,
     },
     playing: {
-      type: Boolean,
-      default: false,
-    },
-    highlighted: {
       type: Boolean,
       default: false,
     },
@@ -128,9 +130,20 @@ export default {
     border-color: red;
   }
 
-  audio,
-  input {
+  audio {
     display: none;
+  }
+
+  &__settings {
+    font-size: 12px;
+    color: #000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  input {
+    width: 100%;
   }
 }
 </style>
