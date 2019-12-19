@@ -13,7 +13,7 @@ const run = () => {
       lastTick = currentTick;
       postMessage('next_tick');
     }
-  }, 0);
+  }, 1);
 };
 
 self.addEventListener('message', (message) => {
