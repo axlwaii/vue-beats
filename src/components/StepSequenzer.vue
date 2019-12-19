@@ -14,8 +14,6 @@
       />
       <SamplePad
         :ref="'pad-' + step"
-        :active='step === activeSample'
-        :playing="isPlayingStep(step)"
         :audio-path='sounds[step-1]'
         :sample-id="step"
         :highlight-color="getColor(step)"
@@ -46,15 +44,13 @@ export default {
       'stepSamples',
     ]),
     activeStepSamples() {
-      return Object.keys(this.stepSamples);
+      return this.stepSamples[this.activeStep] || [];
     },
   },
   watch: {
     activeStep() {
       this.activeStepSamples.forEach((stepSample) => {
-        if (this.stepSamples[stepSample].includes(this.activeStep)) {
-          this.$refs[`pad-${stepSample}`][0].play();
-        }
+        this.$refs[`pad-${stepSample}`][0].play();
       });
     },
   },
@@ -70,27 +66,14 @@ export default {
       this.$store.commit('toggleStepSample', step);
     },
     isActivatedStep(step) {
-      if (!this.stepSamples[this.activeSample]) {
-        return false;
-      }
+      if(!this.stepSamples[step]) return;
 
-      return this.stepSamples[this.activeSample].includes(step);
+      return this.stepSamples[step].includes(this.activeSample);
     },
     inStepSample(step) {
-      let exists = false;
-      Object.keys(this.stepSamples).forEach((stepSample) => {
-        if (this.stepSamples[stepSample].includes(step)) {
-          exists = true;
-        }
-      });
-      return exists;
-    },
-    isPlayingStep(number) {
-      if (!this.stepSamples[number]) {
-        return
-      }
+      if(!this.stepSamples[step]) return false;
 
-      return this.stepSamples[number].includes(this.activeStep);
+      return this.stepSamples[step].length > 0;
     },
   },
 

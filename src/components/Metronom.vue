@@ -56,7 +56,11 @@ export default {
   },
 
   mounted() {
-    worker.onmessage = () => {
+    worker.onmessage = this.onMessage;
+  },
+
+  methods: {
+    onMessage() {
       this.$store.commit('increaseActiveStep');
       this.activeIndicator = this.getNextActiveIndicator();
 
@@ -64,11 +68,10 @@ export default {
       this.lastTick = Date.now();
 
       if (this.soundEnabled) this.beep();
-    };
-  },
 
-  methods: {
-    run: function() {
+      return true;
+    },
+    run() {
       this.lastTick = Date.now();
 
       worker.postMessage({
@@ -78,19 +81,19 @@ export default {
       });
     },
 
-    getNextActiveIndicator: function() {
+    getNextActiveIndicator() {
       return this.activeIndicator === null || this.activeIndicator >= this.indicators
         ?
         1 : this.activeIndicator + 1;
     },
 
     /* Returns the true if given number equals the active indicator */
-    isActivateIndicator: function(number) {
+    isActivateIndicator(number) {
       return this.activeIndicator === number;
     },
 
     /* Returns beep sound */
-    beep: function() {
+    beep() {
       const context = new AudioContext();
       const oscillator = context.createOscillator(); // Oscillator defaults to sine wave
 

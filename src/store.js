@@ -57,18 +57,20 @@ export default new Vuex.Store({
       state.activeSample = value;
     },
     toggleStepSample(state, step) {
-      if (!state.stepSamples[state.activeSample]) {
-        state.stepSamples[state.activeSample] = [step];
+      // { stepNumber: [samples]}
+
+      if (!state.stepSamples[step]) {
+        state.stepSamples[step] = [state.activeSample];
         return;
       }
 
-      if (state.stepSamples[state.activeSample].includes(step)) {
-        state.stepSamples[state.activeSample]
-          .splice(state.stepSamples[state.activeSample].indexOf(step), 1);
+      if (state.stepSamples[step].includes(state.activeSample)) {
+        state.stepSamples[step]
+          .splice(state.stepSamples[step].indexOf(state.activeSample), 1);
         return;
       }
 
-      state.stepSamples[state.activeSample].push(step);
+      state.stepSamples[step].push(state.activeSample);
     },
     clearStepSamples(state) {
       state.stepSamples = {};

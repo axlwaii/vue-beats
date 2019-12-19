@@ -30,14 +30,6 @@ export default {
       type: Number,
       required: true,
     },
-    active: {
-      type: Boolean,
-      default: false,
-    },
-    playing: {
-      type: Boolean,
-      default: false,
-    },
     highlightColor: {
       type: String,
       default: '#ddd',
@@ -54,7 +46,11 @@ export default {
     ...mapState([
       'stepMode',
       'bpm',
+      'activeSample',
     ]),
+    active() {
+      return this.sampleId === this.activeSample;
+    },
   },
 
   mounted: function() {
@@ -82,8 +78,14 @@ export default {
       this.play();
     },
     play() {
-      this.audio.fastSeek(0);
+      this.audio.currentTime = 0;
       this.audio.play();
+
+      this.playing = true;
+
+      setTimeout(() => {
+        this.playing = false;
+      }, (this.audio.duration * 1000));
     },
   },
 
@@ -91,6 +93,7 @@ export default {
     return {
       activeState: this.active,
       activated: false,
+      playing: false,
       audio: null,
       customAudioUrl: this.audioPath,
       state: {},
