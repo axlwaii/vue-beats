@@ -1,17 +1,19 @@
 <template>
 <div class="step-sequenzer">
   <div class="step-sequenzer__steps">
-    <div class="step-sequenzer__step" v-for="step in totalSteps" :key="step">
+    <div class="step-sequenzer__step" v-for="stepNumber in totalSteps" :key="`step-${stepNumber}`">
       <input
         :class="{
-                activated: inStepSample(step),
-                active: isActivatedStep(step),
-                indicator: activeStep === step
-        }"
+                activated: inStepSample(stepNumber),
+                active: isActivatedStep(stepNumber),
+                indicator: activeStep === stepNumber
+                }"
         class="step-sequenzer__sequenz"
-        @click="toggleStep(step)"
+        @click="toggleStep(stepNumber)"
         type="button"
       />
+    </div>
+    <div class="step-sequenzer__step" v-for="step in totalSteps" :key="step">
       <SamplePad
         :ref="'pad-' + step"
         :audio-path='sounds[step-1]'
@@ -47,10 +49,20 @@ export default {
       return this.stepSamples[this.activeStep] || [];
     },
   },
+  mounted() {
+    let i = 0;
+
+    for(i; i < this.totalSteps; i++) {
+      this.stepRefs.push(this.$refs[`pad-${i + 1}`][0]);
+    }
+  },
   watch: {
     activeStep() {
-      this.activeStepSamples.forEach((stepSample) => {
-        this.$refs[`pad-${stepSample}`][0].play();
+      requestAnimationFrame(() => {
+        this.activeStepSamples.forEach((stepSample) => {
+          this.stepRefs[stepSample - 1].play();
+          // this.$refs[`pad-${stepSample}`][0].play();
+        });
       });
     },
   },
@@ -63,7 +75,9 @@ export default {
       return COLORS[step];
     },
     toggleStep(step) {
-      this.$store.commit('toggleStepSample', step);
+      requestAnimationFrame(() => {
+        this.$store.commit('toggleStepSample', step);
+      });
     },
     isActivatedStep(step) {
       if(!this.stepSamples[step]) return;
@@ -81,6 +95,7 @@ export default {
     return {
       audio: null,
       stepModeCheckbox: this.stepMode,
+      stepRefs: [],
     }
   }
 }

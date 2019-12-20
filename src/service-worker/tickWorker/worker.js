@@ -1,13 +1,14 @@
 let interval = null;
 let delay = 0;
 let running = false;
-let lastTick = false;
+let lastTick = null;
+let currentTick = null;
 
 const run = () => {
   if(!running) return;
 
   interval = setInterval(() => {
-    const currentTick = Date.now();
+    currentTick = Date.now();
 
     if (currentTick >= (lastTick + delay)) {
       lastTick = currentTick;

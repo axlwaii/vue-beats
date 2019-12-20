@@ -76,8 +76,10 @@ export default {
       this.$el.appendChild(audio);
     },
     selectAndPlay() {
-      this.$store.commit('setActiveSample', this.sampleId);
-      this.play();
+      requestAnimationFrame(() => {
+        this.$store.commit('setActiveSample', this.sampleId);
+        this.play();
+      });
     },
     play() {
       this.audio.currentTime = 0;
