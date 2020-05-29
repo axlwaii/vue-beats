@@ -1,4 +1,5 @@
 # vue-beats
+A step sequenzer written in vue js.
 
 ## Project setup
 ```
